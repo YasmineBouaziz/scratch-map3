@@ -5,6 +5,8 @@
 	stroke-width: 1;
 	stroke-linecap: round;
 	stroke-linejoin: round;
+  background-color: white;
+  padding: 50px;
 
 	&__location {
 		fill: rgb(181, 181, 181);
@@ -12,7 +14,7 @@
 
 		&:focus,
 		&:hover {
-			fill: #b8e2b3;
+			fill: #697764;
 			outline: 0;
 		}
 
