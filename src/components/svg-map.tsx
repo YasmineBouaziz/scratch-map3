@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Placement } from "react-bootstrap/esm/types";
+import { count } from "console";
 
 type Location = {
   path: string;
@@ -40,9 +41,16 @@ type MapProps = {
   childrenAfter?: any;
 };
 
+type CountryData = {
+  has_visited?: boolean;
+};
+
 function SVGMap(props: MapProps) {
   const [selectedCountry, setSelectedCountry] = useState<Location>();
   const [placement, setPlacement] = useState<Placement>("right");
+  const country_visited: Record<string, CountryData> = {
+    Algeria: { has_visited: true },
+  };
 
   const popover = (
     <Popover id="popover-basic">
@@ -93,10 +101,7 @@ function SVGMap(props: MapProps) {
                   ? props.locationAriaLabel(location, index)
                   : location.name
               }
-              aria-checked={
-                props.isLocationSelected &&
-                props.isLocationSelected(location, index)
-              }
+              aria-checked={getAria(location, country_visited)}
               onMouseOver={props.onLocationMouseOver}
               onMouseOut={props.onLocationMouseOut}
               onMouseMove={props.onLocationMouseMove}
@@ -115,6 +120,21 @@ function SVGMap(props: MapProps) {
       {props.childrenAfter}
     </svg>
   );
+}
+
+function getAria(
+  location: Location,
+  country_visited: Record<string, CountryData>
+) {
+  if (
+    location.name &&
+    location.name in country_visited &&
+    country_visited[location.name].has_visited
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function getPlacement(event: React.MouseEvent<SVGPathElement, MouseEvent>) {
