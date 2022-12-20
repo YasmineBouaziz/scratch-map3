@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Popover from "react-bootstrap/Popover";
+import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Placement } from "react-bootstrap/esm/types";
-import { count } from "console";
 
 type Location = {
   path: string;
@@ -48,9 +48,9 @@ type CountryData = {
 function SVGMap(props: MapProps) {
   const [selectedCountry, setSelectedCountry] = useState<Location>();
   const [placement, setPlacement] = useState<Placement>("right");
-  const country_visited: Record<string, CountryData> = {
-    Algeria: { has_visited: true },
-  };
+  const [countryMetadata, setCountryMetadata] = useState<
+    Record<string, CountryData>
+  >({});
 
   const popover = (
     <Popover id="popover-basic">
@@ -58,12 +58,28 @@ function SVGMap(props: MapProps) {
         {selectedCountry && selectedCountry.name}
       </Popover.Header>
       <Popover.Body>{"Nothing to say for now :)"}</Popover.Body>
+      {selectedCountry &&
+        selectedCountry.name &&
+        !(
+          countryMetadata[selectedCountry.name] &&
+          countryMetadata[selectedCountry.name].has_visited
+        ) && (
+          <Button
+            variant="primary"
+            onClick={() =>
+              updateCountry(
+                countryMetadata,
+                selectedCountry,
+                setCountryMetadata
+              )
+            }
+          >
+            Visited?
+          </Button>
+        )}
     </Popover>
   );
 
-  useEffect(() => {
-    return;
-  }, [placement]);
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +117,7 @@ function SVGMap(props: MapProps) {
                   ? props.locationAriaLabel(location, index)
                   : location.name
               }
-              aria-checked={getAria(location, country_visited)}
+              aria-checked={getAria(location, countryMetadata)}
               onMouseOver={props.onLocationMouseOver}
               onMouseOut={props.onLocationMouseOut}
               onMouseMove={props.onLocationMouseMove}
@@ -144,6 +160,26 @@ function getPlacement(event: React.MouseEvent<SVGPathElement, MouseEvent>) {
   if (x_coord >= half_x) {
     return "left";
   } else return "right";
+}
+
+function updateCountry(
+  country_visited: Record<string, CountryData>,
+  selectedCountry: Location | undefined,
+  setCountryMetadata: React.Dispatch<
+    React.SetStateAction<Record<string, CountryData>>
+  >
+) {
+  if (selectedCountry && selectedCountry.name) {
+    if (selectedCountry.name in country_visited) {
+      var copy = { ...country_visited };
+      copy[selectedCountry.name].has_visited = true;
+      setCountryMetadata(copy);
+    } else {
+      var copy = { ...country_visited };
+      copy[selectedCountry.name] = { has_visited: true };
+      setCountryMetadata(copy);
+    }
+  }
 }
 
 SVGMap.defaultProps = {
