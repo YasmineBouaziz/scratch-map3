@@ -7,24 +7,19 @@
 	stroke-linejoin: round;
   margin-top: 50px;
 
-	&__location {
-		fill: rgb(181, 181, 181);
-		cursor: pointer;
+  &__location {
+    cursor: pointer;
 
-		&:focus,
-		&:hover {
-			fill: #b8e2b3;
-			outline: 0;
-		}
-
-		&[aria-checked=true] {
-			fill: #f4bc44;
-		}
-	}
+    &:focus,
+    &:hover {
+      filter: brightness(115%);
+      outline: 0;
+    }
+  }
 }
 
 svg {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 path{
