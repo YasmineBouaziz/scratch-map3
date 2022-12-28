@@ -1,9 +1,7 @@
 import "./style/App.scss";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import World from "@svg-maps/world";
+import World from "./maps/world";
 import SVGMap from "./components/svg-map";
-import { useState } from "react";
 
 import "./style/map.scss";
 
