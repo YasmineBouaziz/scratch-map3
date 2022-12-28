@@ -70,11 +70,36 @@ function SVGMap(props: MapProps) {
               updateCountry(
                 countryMetadata,
                 selectedCountry,
-                setCountryMetadata
+                setCountryMetadata,
+                true
               )
             }
           >
             Visited?
+          </Button>
+        )}
+      {selectedCountry &&
+        selectedCountry.name &&
+        countryMetadata[selectedCountry.name] &&
+        countryMetadata[selectedCountry.name].has_visited && (
+          <Button variant="primary">Visited again?</Button>
+        )}
+      {selectedCountry &&
+        selectedCountry.name &&
+        countryMetadata[selectedCountry.name] &&
+        countryMetadata[selectedCountry.name].has_visited && (
+          <Button
+            variant="secondary"
+            onClick={() =>
+              updateCountry(
+                countryMetadata,
+                selectedCountry,
+                setCountryMetadata,
+                false
+              )
+            }
+          >
+            Not visited?
           </Button>
         )}
     </Popover>
@@ -163,20 +188,21 @@ function getPlacement(event: React.MouseEvent<SVGPathElement, MouseEvent>) {
 }
 
 function updateCountry(
-  country_visited: Record<string, CountryData>,
+  countries: Record<string, CountryData>,
   selectedCountry: Location | undefined,
   setCountryMetadata: React.Dispatch<
     React.SetStateAction<Record<string, CountryData>>
-  >
+  >,
+  isVisited: boolean
 ) {
   if (selectedCountry && selectedCountry.name) {
-    if (selectedCountry.name in country_visited) {
-      var copy = { ...country_visited };
-      copy[selectedCountry.name].has_visited = true;
+    if (selectedCountry.name in countries) {
+      var copy = { ...countries };
+      copy[selectedCountry.name].has_visited = isVisited;
       setCountryMetadata(copy);
     } else {
-      var copy = { ...country_visited };
-      copy[selectedCountry.name] = { has_visited: true };
+      var copy = { ...countries };
+      copy[selectedCountry.name] = { has_visited: isVisited };
       setCountryMetadata(copy);
     }
   }
