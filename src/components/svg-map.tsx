@@ -8,6 +8,7 @@ type Location = {
   path: string;
   id: string;
   name?: string;
+  colour?: string;
 };
 
 type Map = {
@@ -137,10 +138,7 @@ function SVGMap(props: MapProps) {
         {totalVisited && totalVisited} / 256
       </text>
       {props.map.locations.map((location, index) => {
-        document.documentElement.style.setProperty(
-          "--svg-map__location.fill",
-          "#4444FF"
-        );
+        console.log(location.colour);
         return (
           <OverlayTrigger
             trigger="click"
@@ -175,9 +173,14 @@ function SVGMap(props: MapProps) {
                       location.name in countryMetadata &&
                       countryMetadata[location.name].has_visited &&
                       countryMetadata[location.name].colour &&
+                      location.colour) ||
+                    (location.name &&
+                      location.name in countryMetadata &&
+                      countryMetadata[location.name].has_visited &&
+                      countryMetadata[location.name].colour &&
                       countryMetadata[location.name].colour) ||
-                    "#f4bc44"
-                  : "#B5B5B5"
+                    "#f4bc59"
+                  : (location.name && location.colour) || "#B5B5B5"
               }
               onMouseOver={props.onLocationMouseOver}
               onMouseOut={props.onLocationMouseOut}
@@ -241,14 +244,18 @@ function updateCountry(
       console.log(isVisited);
       const visitedChange = isVisited ? 1 : -1;
       setTotalVisited(totalVisited + visitedChange);
-      copy[selectedCountry.name].colour = generateRandomColor();
+      if (!copy[selectedCountry.name].colour) {
+        copy[selectedCountry.name].colour = generateRandomColor();
+      }
     } else {
       var copy = { ...countries };
       copy[selectedCountry.name] = { has_visited: isVisited };
       setCountryMetadata(copy);
       const visitedChange = isVisited ? 1 : -1;
       setTotalVisited(totalVisited + visitedChange);
-      copy[selectedCountry.name].colour = generateRandomColor();
+      if (!copy[selectedCountry.name].colour) {
+        copy[selectedCountry.name].colour = generateRandomColor();
+      }
     }
   }
 }
