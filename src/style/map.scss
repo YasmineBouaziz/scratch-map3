@@ -1,31 +1,26 @@
 .svg-map {
-	width: 90%;
-	height: auto;
-	stroke: #666;
-	stroke-width: 1;
-	stroke-linecap: round;
-	stroke-linejoin: round;
+  width: 90%;
+  height: auto;
+  stroke: #666;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 
-	&__location {
-		fill: rgb(181, 181, 181);
-		cursor: pointer;
+  &__location {
+    cursor: pointer;
 
-		&:focus,
-		&:hover {
-			filter: brightness(115%);
-			outline: 0;
-		}
-
-		&[aria-checked=true] {
-			fill: #f4bc44;
-		}
-	}
+    &:focus,
+    &:hover {
+      filter: brightness(115%);
+      outline: 0;
+    }
+  }
 }
 
 svg {
-    pointer-events: none;
+  pointer-events: none;
 }
 
-path{
-    pointer-events: auto;
+path {
+  pointer-events: auto;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -43,7 +43,20 @@ type MapProps = {
 
 type CountryData = {
   has_visited?: boolean;
+  colour?: string;
 };
+
+function getTotalVisited(countryMetadata: Record<string, CountryData>): number {
+  // TODO: Do all of this in the backend and provide this number with the initial metadata
+  // 256 total countries
+  let totalVisited = 0;
+  for (const key in countryMetadata) {
+    if (countryMetadata[key].has_visited) {
+      totalVisited += 1;
+    }
+  }
+  return totalVisited;
+}
 
 function SVGMap(props: MapProps) {
   const [selectedCountry, setSelectedCountry] = useState<Location>();
@@ -51,6 +64,9 @@ function SVGMap(props: MapProps) {
   const [countryMetadata, setCountryMetadata] = useState<
     Record<string, CountryData>
   >({});
+  const [totalVisited, setTotalVisited] = useState<number>(
+    getTotalVisited(countryMetadata)
+  );
 
   const popover = (
     <Popover id="popover-basic">
@@ -71,7 +87,9 @@ function SVGMap(props: MapProps) {
                 countryMetadata,
                 selectedCountry,
                 setCountryMetadata,
-                true
+                true,
+                setTotalVisited,
+                totalVisited
               )
             }
           >
@@ -95,7 +113,9 @@ function SVGMap(props: MapProps) {
                 countryMetadata,
                 selectedCountry,
                 setCountryMetadata,
-                false
+                false,
+                setTotalVisited,
+                totalVisited
               )
             }
           >
@@ -113,8 +133,14 @@ function SVGMap(props: MapProps) {
       role={props.role}
       aria-label={props.map.label}
     >
-      {props.childrenBefore}
+      <text x="90%" y="10%" fill="red">
+        {totalVisited && totalVisited} / 256
+      </text>
       {props.map.locations.map((location, index) => {
+        document.documentElement.style.setProperty(
+          "--svg-map__location.fill",
+          "#4444FF"
+        );
         return (
           <OverlayTrigger
             trigger="click"
@@ -142,7 +168,17 @@ function SVGMap(props: MapProps) {
                   ? props.locationAriaLabel(location, index)
                   : location.name
               }
-              aria-checked={getAria(location, countryMetadata)}
+              // "#f4bc44"
+              fill={
+                getAria(location, countryMetadata)
+                  ? (location.name &&
+                      location.name in countryMetadata &&
+                      countryMetadata[location.name].has_visited &&
+                      countryMetadata[location.name].colour &&
+                      countryMetadata[location.name].colour) ||
+                    "#f4bc44"
+                  : "#B5B5B5"
+              }
               onMouseOver={props.onLocationMouseOver}
               onMouseOut={props.onLocationMouseOut}
               onMouseMove={props.onLocationMouseMove}
@@ -158,7 +194,6 @@ function SVGMap(props: MapProps) {
           </OverlayTrigger>
         );
       })}
-      {props.childrenAfter}
     </svg>
   );
 }
@@ -170,7 +205,8 @@ function getAria(
   if (
     location.name &&
     location.name in country_visited &&
-    country_visited[location.name].has_visited
+    country_visited[location.name].has_visited &&
+    country_visited[location.name].colour
   ) {
     return true;
   } else {
@@ -193,19 +229,32 @@ function updateCountry(
   setCountryMetadata: React.Dispatch<
     React.SetStateAction<Record<string, CountryData>>
   >,
-  isVisited: boolean
-) {
+  isVisited: boolean,
+  setTotalVisited: React.Dispatch<React.SetStateAction<number>>,
+  totalVisited: number
+): void {
   if (selectedCountry && selectedCountry.name) {
     if (selectedCountry.name in countries) {
       var copy = { ...countries };
       copy[selectedCountry.name].has_visited = isVisited;
       setCountryMetadata(copy);
+      console.log(isVisited);
+      const visitedChange = isVisited ? 1 : -1;
+      setTotalVisited(totalVisited + visitedChange);
+      copy[selectedCountry.name].colour = generateRandomColor();
     } else {
       var copy = { ...countries };
       copy[selectedCountry.name] = { has_visited: isVisited };
       setCountryMetadata(copy);
+      const visitedChange = isVisited ? 1 : -1;
+      setTotalVisited(totalVisited + visitedChange);
+      copy[selectedCountry.name].colour = generateRandomColor();
     }
   }
+}
+
+function generateRandomColor() {
+  return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
 }
 
 SVGMap.defaultProps = {
