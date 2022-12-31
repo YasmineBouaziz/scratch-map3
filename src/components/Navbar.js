@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
-import logo from './map_icon.png'
+import logo from './images/map_icon.png'
 
 function NavBar () {
   return (
