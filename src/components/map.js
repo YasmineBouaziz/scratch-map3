@@ -1,13 +1,13 @@
-import World from "../maps/world";
-import SVGMap from "./svg-map";
-import React from "react";
+import { World } from '../maps/world'
+import SVGMap from './svg-map'
+import React from 'react'
 
-function Home() {
+function Home () {
   return (
-    <div id="world-map" style={{ height: "100%" }}>
+    <div id='world-map' style={{ height: '100%' }}>
       <SVGMap map={World} />
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home
