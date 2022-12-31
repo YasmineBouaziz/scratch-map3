@@ -1,20 +1,22 @@
+import React, { lazy } from "react";
 import "./style/App.scss";
 import Navbar from "./components/Navbar";
-import World from "./maps/world";
-import SVGMap from "./components/svg-map";
-
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./style/map.scss";
+
+const About = lazy(() => import("./components/About"));
+const Home = lazy(() => import("./components/map"));
 
 function App() {
   return (
     <div className="App">
       <Navbar />
-      {/* <header className="App-header">
-        Where to next?
-      </header> */}
-      <div id="world-map" style={{ height: "100%" }}>
-        <SVGMap map={World} />
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/about" element={<About />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
