@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-function About () {
+function About() {
   return (
     <div>
       <h1>Welcome to Scratch Map</h1>
     </div>
-  )
+  );
 }
 
-export default About
+export default About;
