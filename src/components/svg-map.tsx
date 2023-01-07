@@ -35,7 +35,6 @@ type MapProps = {
   onLocationFocus?: any;
   onLocationBlur?: any;
   isLocationSelected?: any;
-  test?: any;
 
   // Slots
   childrenBefore?: any;
@@ -166,7 +165,6 @@ function SVGMap(props: MapProps) {
                   ? props.locationAriaLabel(location, index)
                   : location.name
               }
-              // "#f4bc44"
               fill={
                 getAria(location, countryMetadata)
                   ? (location.name &&
@@ -180,7 +178,7 @@ function SVGMap(props: MapProps) {
                       countryMetadata[location.name].colour &&
                       countryMetadata[location.name].colour) ||
                     "#f4bc59"
-                  : (location.name && location.colour) || "#B5B5B5"
+                  : "#B5B5B5" || (location.name && location.colour)
               }
               onMouseOver={props.onLocationMouseOver}
               onMouseOut={props.onLocationMouseOut}
@@ -193,7 +191,9 @@ function SVGMap(props: MapProps) {
               onFocus={props.onLocationFocus}
               onBlur={props.onLocationBlur}
               key={location.id}
-            />
+            >
+              <title>{location.name}</title>
+            </path>
           </OverlayTrigger>
         );
       })}
@@ -238,7 +238,7 @@ function updateCountry(
 ): void {
   if (selectedCountry && selectedCountry.name) {
     if (selectedCountry.name in countries) {
-      var copy = { ...countries };
+      const copy = { ...countries };
       copy[selectedCountry.name].has_visited = isVisited;
       setCountryMetadata(copy);
       console.log(isVisited);
@@ -248,7 +248,7 @@ function updateCountry(
         copy[selectedCountry.name].colour = generateRandomColor();
       }
     } else {
-      var copy = { ...countries };
+      const copy = { ...countries };
       copy[selectedCountry.name] = { has_visited: isVisited };
       setCountryMetadata(copy);
       const visitedChange = isVisited ? 1 : -1;
