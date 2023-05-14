@@ -8,7 +8,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./style/map.scss";
-import Home from "./components/map";
+import Map from "./components/Map";
 import About from "./components/About";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
@@ -56,7 +56,7 @@ const App = () => {
             path="/map"
             element={
               <RequireAuth>
-                <Home />
+                <Map />
               </RequireAuth>
             }
           />

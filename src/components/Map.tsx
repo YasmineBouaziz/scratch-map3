@@ -1,13 +1,13 @@
 import { World } from "../maps/world";
-import DemoMap from "./DemoMap";
+import SVGMap from "./svg-map";
 import React from "react";
 
-function Demo() {
+function Map(): JSX.Element {
   return (
     <div id="world-map" style={{ height: "100%" }}>
-      <DemoMap map={World} />
+      <SVGMap map={World} />
     </div>
   );
 }
 
-export default Demo;
+export default Map;

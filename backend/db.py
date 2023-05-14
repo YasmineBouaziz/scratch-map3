@@ -1,8 +1,10 @@
+from __future__ import annotations
 import asyncpg
 from asyncpg import Connection
 from dataclasses import dataclass
 from typing import Optional
 from contextlib import asynccontextmanager
+from collections.abc import Generator
 
 
 @dataclass
@@ -16,7 +18,7 @@ class CountryMetadata:
 
 
 @asynccontextmanager
-async def get_db_accessor():
+async def get_db_accessor() -> Generator[ScratchMapAccessor, None, None]:
     async with DatabaseConnection(
         port="5432",
         host="localhost",
@@ -37,7 +39,7 @@ class DatabaseConnection:
         self.user = user
         self.password = password
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> asyncpg.Connection:
         self.connection = await asyncpg.connect(
             host=self.host,
             port=self.port,
@@ -57,14 +59,14 @@ class DBAccessor:
 
 
 class ScratchMapAccessor(DBAccessor):
-    async def get_user_id(self, email, password):
+    async def get_user_id(self, email: str, password: str) -> str:
         query = """SELECT id FROM user_ WHERE email = $1 and password = crypt($2, password)"""
         user_id = await self.connection.fetch(query, email, password)
         if not user_id:
             raise ValueError("Incorrect username or password")
         return str(user_id[0]["id"])
 
-    async def signup_user(self, email, password):
+    async def signup_user(self, email: str, password: str) -> str:
         query = """
                 INSERT INTO user_ (email, password) VALUES (
                     $1,
@@ -99,7 +101,6 @@ class ScratchMapAccessor(DBAccessor):
             """,
             user_id,
         )
-        print(visited_countries)
         return {
             country["name"]: CountryMetadata(**country) for country in visited_countries
         }
@@ -110,7 +111,7 @@ class ScratchMapAccessor(DBAccessor):
         country: str,
         rating: Optional[int] = None,
         description: Optional[str] = None,
-    ):
+    ) -> CountryMetadata:
         insert_sql = """
                 INSERT INTO user_country (user_id, country, date_of_visit, rating, description)
                 VALUES ($1, $2, CURRENT_DATE, $3, $4)

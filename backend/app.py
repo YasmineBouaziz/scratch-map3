@@ -1,11 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, Response
 from db import get_db_accessor
-
-from flask import jsonify
-
-import jwt
-import datetime
-from functools import wraps
+from auth import encode_data, authenticated_route
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your-secret-key-here"
@@ -14,52 +9,19 @@ app.config["SECRET_KEY"] = "your-secret-key-here"
 # Add token refresh method (OPTIONAL, do this way later)
 
 
-def error_to_dict(error):
-    rv = {}
-    rv["message"] = str(error)
-    return rv
+def error_to_dict(error: Exception) -> dict[str, str]:
+    return {"message": str(error)}
 
 
 @app.errorhandler(ValueError)
-def handle_invalid_usage(error):
+def handle_invalid_usage(error: Exception) -> Response:
     response = jsonify(error_to_dict(error))
-    # response.status_code = error.status_code
     return response
-
-
-def decode_auth_token(encoded_data):
-    """
-    Decodes the auth token
-    :param auth_token:
-    :return: integer|string
-    """
-
-    try:
-        decoded_data = jwt.decode(
-            jwt=encoded_data, key=app.config.get("SECRET_KEY"), algorithms=["HS256"]
-        )
-        return decoded_data["user_id"]
-    except jwt.ExpiredSignatureError:
-        raise jwt.ExpiredSignatureError("Signature expired. Please log in again.")
-    except jwt.InvalidTokenError:
-        raise jwt.InvalidTokenError("Invalid token. Please log in again.")
-
-
-def encode_data(user_id: str):
-    payload = {
-        "exp": datetime.datetime.utcnow()
-        + datetime.timedelta(days=0, minutes=5, seconds=5),
-        "iat": datetime.datetime.utcnow(),
-        "user_id": user_id,
-    }
-    return jwt.encode(
-        payload=payload, key=app.config.get("SECRET_KEY"), algorithm="HS256"
-    )
 
 
 # Login API Route
 @app.route("/login", methods=["POST"])
-async def login():
+async def login() -> tuple[Response, int]:
     email = request.json["email"]
     password = request.json["password"]
     async with get_db_accessor() as db_accessor:
@@ -79,7 +41,7 @@ async def login():
 
 # Sign up API Route
 @app.route("/signup", methods=["POST"])
-async def sign_up():
+async def sign_up() -> tuple[Response, int]:
     email = request.json["email"]
     password = request.json["password"]
     async with get_db_accessor() as db_accessor:
@@ -95,24 +57,9 @@ async def sign_up():
         )
 
 
-def authenticated_route(f):
-    @wraps(f)
-    async def wrapper(*args, **kwargs):
-        try:
-            user_id = decode_auth_token(request.headers.get("Authorization"))
-            return await f(user_id=user_id)
-        except Exception as e:
-            return (
-                jsonify({"success": False, "error": str(e)}),
-                401,
-            )
-
-    return wrapper
-
-
 @app.route("/get-visited-countries-for-user", methods=["GET", "POST"])
 @authenticated_route
-async def get_visited_countries_for_user(user_id: str):
+async def get_visited_countries_for_user(user_id: str) -> Response:
     async with get_db_accessor() as db_accessor:
         user_countries = await db_accessor.get_country_data_by_user(user_id)
     return jsonify(user_countries)
@@ -121,7 +68,7 @@ async def get_visited_countries_for_user(user_id: str):
 # Add visited country
 @app.route("/visit-country", methods=["POST"])
 @authenticated_route
-async def visit_country_for_user(user_id: str):
+async def visit_country_for_user(user_id: str) -> Response:
     country = request.json["country"]
     async with get_db_accessor() as db_accessor:
         new_country = await db_accessor.visit_country_for_user(user_id, country)
@@ -131,29 +78,15 @@ async def visit_country_for_user(user_id: str):
 # Add visited country
 @app.route("/unvisit-country", methods=["POST"])
 @authenticated_route
-async def unvisit_country_for_user(user_id: str):
+async def unvisit_country_for_user(user_id: str) -> Response:
     country = request.json["country"]
     async with get_db_accessor() as db_accessor:
         await db_accessor.unvisit_country_for_user(user_id, country)
     return jsonify({"success": True}), 200
 
 
-@app.route("/login", methods=["OPTIONS"])
-def handle_options():
-    return (
-        "",
-        200,
-        {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Credentials": "true",
-        },
-    )
-
-
 @app.after_request
-def add_cors_headers(response):
+def add_cors_headers(response: Response) -> Response:
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers[
         "Access-Control-Allow-Headers"

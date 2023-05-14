@@ -13,12 +13,16 @@
     "allowUnusedLabels": true,    
     "allowUnreachableCode": true, 
 
-    "skipLibCheck": true 
-    ,"jsx": "react"
+    "skipLibCheck": true ,
+    "jsx": "react",
+    "moduleResolution": "node",
   },
   "include": [
     "src/",
     "src/maps/",
     "src/components/", "tsconfig.eslint.json"
-  ]
+  ],
+  "resolve": {
+    "extensions": [".ts", ".tsx", ".js"]
+  }
 }

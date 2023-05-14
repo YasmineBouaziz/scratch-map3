@@ -42,8 +42,16 @@
       {
         "ts": "never",
         "tsx": "never",
-        "js": "never"
+        "js": "never",
+        "jsx": "never"
       }
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }
