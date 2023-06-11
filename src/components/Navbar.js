@@ -10,7 +10,7 @@ function NavBar() {
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
         <Container>
           <Navbar.Brand href="/map">
-            <img src={logo} className="App-logo" alt="logo" />
+            <img src={logo} class="App-logo" alt="logo" />
           </Navbar.Brand>
           <Navbar.Brand href="/map"> Scratch Map</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
