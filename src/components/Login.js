@@ -7,6 +7,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "./_Login.scss";
+import logo from "./map_icon.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -45,22 +47,41 @@ const Login = () => {
 
   return (
     <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={handleEmailChange} />
+      <img src={logo} class="App-logo" alt="logo" />
+      <div class="login-container">
+        <div class="form-container">
+          <h1 class="login-title">Sign In</h1>
+          <p>
+            New to Scratch Map?{" "}
+            <a class="sign-up-link" href="./signup">
+              Sign up for free!
+            </a>
+          </p>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label class="email-label">Email</label>
+              <input
+                class="email"
+                type="email"
+                value={email}
+                onChange={handleEmailChange}
+              />
+            </div>
+            <div>
+              <label class="password-label">Password</label>
+              <input
+                class="password"
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+            </div>
+            <button tabindex="0" class="continue-button" type="submit">
+              Continue
+            </button>
+          </form>
         </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
+      </div>
     </div>
   );
 };

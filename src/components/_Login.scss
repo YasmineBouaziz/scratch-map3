@@ -1,0 +1,145 @@
+body {
+  background-color: #f9f6f4;
+}
+
+.login-container {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 58em;
+  height: 31em;
+  left: 15em;
+  top: 8em;
+
+  background: #ffffff;
+  border: 0.0625em solid #000000;
+  margin: auto;
+  z-index: -1;
+}
+
+.login-title {
+  margin-top: 1em;
+  width: 9em;
+  height: 2.5em;
+  left: 21em;
+  top: 13em;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 2.5em;
+  line-height: 2.5em;
+
+  color: #030303;
+}
+
+.form-container {
+  text-align: left;
+  margin-left: 8em;
+}
+
+.sign-up-link {
+  color: #72c4ab;
+  text-decoration: none;
+}
+
+.sign-up-link:hover {
+  text-decoration: underline;
+  color: #72c4ab;
+}
+
+.email-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.password-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.email {
+  box-sizing: border-box;
+
+  width: 631px;
+  height: 41px;
+  margin-bottom: 2em;
+
+  background: #ffffff;
+  border: 1px solid #72c4ab;
+}
+
+.password {
+  box-sizing: border-box;
+
+  width: 631px;
+  height: 41px;
+  margin-bottom: 2em;
+
+  background: #ffffff;
+  border: 1px solid #72c4ab;
+}
+
+/* CSS */
+.continue-button {
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter;
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: -0.8px;
+  line-height: 24px;
+  min-width: 140px;
+  outline: 0;
+  padding: 0 17px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 631px;
+}
+
+.continue-button:focus {
+  color: #171e29;
+}
+
+.continue-button:hover {
+  border-color: #72c4ab;
+  background-color: #72c4ab;
+  color: white;
+  fill: #72c4ab;
+}
+
+.continue-button:active {
+  border-color: #72c4ab;
+  background-color: #72c4ab;
+  color: white;
+  fill: #72c4ab;
+}
+
+@media (min-width: 768px) {
+  .continue-button {
+    min-width: 170px;
+  }
+}
+
+.App-logo {
+  position: absolute;
+  width: 45px;
+  height: 39px;
+  left: 219px;
+  top: 110px;
+}
